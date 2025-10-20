@@ -6,8 +6,6 @@ from torchvision import datasets, transforms
 import matplotlib.pyplot as plt
 
 # Define a simple CNN block
-
-# Define a simple CNN block
 class CNNBlock(nn.Module):
     def __init__(self, in_channels, out_channels, dropout_rate=0.4):
         super(CNNBlock, self).__init__()
@@ -30,7 +28,7 @@ class CNNBlock(nn.Module):
 
         return x
 
-# Define the main CNN with a single branch and merging
+# Define the main CNN with a single branch and merge
 class MergedCNN(nn.Module):
     def __init__(self, dropout_rate=0.4):
         super(MergedCNN, self).__init__()
@@ -75,10 +73,9 @@ transform = transforms.Compose([
     transforms.Normalize((0.5,), (0.5,))
 ])
 
-# Load the entire MNIST dataset
 full_dataset = datasets.MNIST(root='./data', train=True, download=True, transform=transform)
 
-# Use all of the dataset for training
+# Whole dataset for training
 train_size = len(full_dataset)
 validation_size = train_size // 2  # Use half of the dataset for validation
 train_dataset = full_dataset
@@ -89,11 +86,11 @@ validation_dataset, _ = random_split(full_dataset, [validation_size, len(full_da
 train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
 validation_loader = DataLoader(validation_dataset, batch_size=64, shuffle=True)
 
-# Grid search for learning rate and weight decay
+# Optim: grid search for learning rate and weight decay
 # lr_values - 0.001, 0.005, 0.01, 0.05, 0.1
 # wd_values - 1e-5, 1e-4, 1e-3, 0
-learning_rate_values = [0.005]  # You can add more values to search
-weight_decay_values = [1e-5]  # You can add more values to search
+learning_rate_values = [0.005] 
+weight_decay_values = [1e-5]  
 best_learning_rate = None
 best_weight_decay = None
 best_accuracy = 0.0
@@ -138,7 +135,7 @@ for lr in learning_rate_values:
         with torch.no_grad():
             correct = 0
             total = 0
-            for images, labels in validation_loader:  # You need to define a validation_loader
+            for images, labels in validation_loader: 
                 outputs = model(images)
                 _, predicted = torch.max(outputs.data, 1)
                 total += labels.size(0)
@@ -162,7 +159,7 @@ print(f"Best learning rate: {best_learning_rate}, Best weight decay: {best_weigh
 
 print(data_set_accuracy)
 
-# Now, train the final model with the best learning rate and weight decay
+# Train the final model with the best learning rate and weight decay
 model = MergedCNN()
 optimizer = optim.Adam(model.parameters(), lr=best_learning_rate, weight_decay=best_weight_decay)
 

@@ -22,7 +22,7 @@ class CNNBlock(nn.Module):
 
         return x
 
-# Define the main CNN with a single branch and merging
+# Define the main CNN with a single branch and merge
 class MergedCNN(nn.Module):
     def __init__(self, dropout_rate=0.4):
         super(MergedCNN, self).__init__()
@@ -36,7 +36,7 @@ class MergedCNN(nn.Module):
 
         # Fully connected layers
         self.fc1 = nn.Linear(64 * 14 * 14, 256)
-        self.dropout = nn.Dropout(dropout_rate)  # Fully connected layer dropout
+        self.dropout = nn.Dropout(dropout_rate)
         self.fc2 = nn.Linear(256, 10)
 
     def forward(self, x):
@@ -47,7 +47,7 @@ class MergedCNN(nn.Module):
         out = self.merge(out_branch)
         out = self.relu(out)
 
-        # Flatten
+        # Flatten dimensions
         out = out.view(out.size(0), -1)
 
         # Fully connected layers
