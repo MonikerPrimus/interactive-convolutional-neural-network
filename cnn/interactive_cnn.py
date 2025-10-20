@@ -11,7 +11,7 @@ state_dict = torch.load('merged_cnn_model.pth', weights_only=True)
 model.load_state_dict(state_dict)
 model.eval()
 
-# Function to preprocess the drawn image
+# Preprocess the drawn image
 def preprocess_image(img):
     transform = transforms.Compose([
         transforms.Grayscale(num_output_channels=1),
@@ -20,9 +20,9 @@ def preprocess_image(img):
         transforms.Normalize((0.5,), (0.5,))
     ])
     img = transform(img)
-    return img.unsqueeze(0)  # Add batch dimension
+    return img.unsqueeze(0)
 
-# Establish Drawable GUI Class
+#  Drawable GUI Class
 class ImageDrawer:
     def __init__(self, master, width, height):
         self.master = master
@@ -49,7 +49,7 @@ class ImageDrawer:
     def paint(self, event):
         x, y = event.x, event.y
         pen_width = 20
-        circle_radius = 20  # Choose an appropriate radius for the circle
+        circle_radius = 20  # Circle radius for interpolation
 
         if self.prev_x is not None and self.prev_y is not None:
             self.canvas.create_oval(
@@ -74,7 +74,7 @@ class ImageDrawer:
         # Save the drawn canvas as an image
         self.image.save("drawn_digit.png")
 
-        # Load the drawn image using PIL
+        # Load the drawn image using PIL module
         drawn_image = PIL.Image.open("drawn_digit.png").convert("L")  # Ensure it's grayscale
 
         # Preprocess and predict

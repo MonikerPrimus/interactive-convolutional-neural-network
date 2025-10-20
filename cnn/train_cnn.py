@@ -8,7 +8,7 @@ import random
 from models import MergedCNN
 
 
-# Compose the transforms
+# Transform compose
 aug_transform = transforms.Compose([
     transforms.RandomRotation(degrees=20),
     transforms.RandomResizedCrop(size=(28, 28), scale=(0.75, 1.25)),
@@ -24,7 +24,7 @@ train_aug_dataset = datasets.MNIST(root='./data', train=True, download=True, tra
 train_norm_loader = DataLoader(train_norm_dataset, batch_size=64, shuffle=True)
 train_aug_loader = DataLoader(train_aug_dataset, batch_size=64, shuffle=True)
 
-# Initialize the model, loss function, and optimizer
+# Init  model, loss function, and optimizer
 model = MergedCNN()
 model.train()
 criterion = nn.CrossEntropyLoss()
@@ -34,30 +34,8 @@ total_params = sum(p.numel() for p in model.parameters())
 print("Total number of parameters in the model:", total_params)
 
 # Training loop
+# Adjust epoch
 num_epochs = 10
-for epoch in range(5):
-    correct = 0
-    total = 0
-
-    for batch_idx, (images, labels) in enumerate(train_norm_loader):
-        optimizer.zero_grad()
-        outputs = model(images)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        # Calculate accuracy
-        _, predicted = torch.max(outputs.data, 1)
-        total += labels.size(0)
-        correct += (predicted == labels).sum().item()
-
-        # Print progress every 100 batches
-        if (batch_idx + 1) % 100 == 0:
-            print(f"Epoch [{epoch+1}/{num_epochs}], Batch [{batch_idx+1}/{len(train_norm_loader)}], Loss: {loss.item():.4f}")
-
-    accuracy = 100 * correct / total
-    print(f"Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}, Accuracy: {accuracy:.2f}%")
-
 for epoch in range(num_epochs):
     correct = 0
     total = 0
@@ -84,7 +62,7 @@ for epoch in range(num_epochs):
 
 
 # Test the trained model on a random MNIST image
-model.eval()  # Set the model to evaluation mode
+model.eval()  # Set the model to eval mode
 with torch.no_grad():
     random_index = random.randint(0, len(train_aug_dataset) - 1)
     random_image, random_label = train_aug_dataset[random_index]
@@ -97,6 +75,6 @@ with torch.no_grad():
     plt.title(f"True Label: {random_label}, Predicted Label: {predicted_label.item()}")
     plt.show()
 
-# Save the trained model
 
+# Save the trained model
 torch.save(model.state_dict(), 'merged_cnn_model.pth')
